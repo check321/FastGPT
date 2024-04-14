@@ -18,7 +18,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     await connectToDatabase();
 
-    let { chatId, shareId, outLinkUid } = req.query as InitOutLinkChatProps;
+    let { chatId, shareId, outLinkUid, hint } = req.query as InitOutLinkChatProps;
+
+    // auth link from platform.
+    const authResponse = await fetch(`${process.env.ZXAI_BASE_URL}/open/outlink/auth/${hint}`);
+    const authResult = await authResponse.json();
+
+    console.log(authResult);
+
+    if (authResult.code != 0) {
+      // throw new Error(authResult.errorMsg || 'Authentication failed');
+      throw new Error(AppErrEnum.authExpired);
+    }
 
     // auth link permission
     const { shareChat, uid, appId } = await authOutLink({ shareId, outLinkUid });
