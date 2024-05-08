@@ -195,6 +195,13 @@ const OutLink = ({
           status: 'error',
           title: getErrText(e, t('core.shareChat.Init Error'))
         });
+
+        if (e.code === 502002) {
+          setTimeout(() => {
+            window.location.href = `${process.env.NEXT_PUBLIC_ZXAI_REDIRECT_URL}`;
+          }, 4000);
+        }
+
         if (chatId) {
           router.replace({
             query: {
