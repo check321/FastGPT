@@ -201,9 +201,12 @@ const OutLink = ({
           duration: 4000
         });
 
+        console.log('auto redirect: ', e.code === 502002);
+
         if (e.code === 502002) {
           setTimeout(() => {
-            window.location.href = `${process.env.NEXT_PUBLIC_ZXAI_REDIRECT_URL}`;
+            // window.location.href = `${process.env.NEXT_PUBLIC_ZXAI_REDIRECT_URL}`;
+            window.location.href = 'https://chat.findnew.cn';
           }, 4000);
         }
 
