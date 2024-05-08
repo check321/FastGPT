@@ -18,6 +18,7 @@ export type InitOutLinkChatProps = {
   chatId?: string;
   shareId?: string;
   outLinkUid?: string;
+  hint?: string;
 };
 export type InitChatResponse = {
   chatId?: string;

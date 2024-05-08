@@ -3,7 +3,8 @@ import { ErrType } from '../errorCode';
 /* dataset: 502000 */
 export enum AppErrEnum {
   unExist = 'unExist',
-  unAuthApp = 'unAuthApp'
+  unAuthApp = 'unAuthApp',
+  authExpired = 'authExpired'
 }
 const appErrList = [
   {
@@ -13,6 +14,10 @@ const appErrList = [
   {
     statusText: AppErrEnum.unAuthApp,
     message: '无权操作该应用'
+  },
+  {
+    statusText: AppErrEnum.authExpired,
+    message: '当前VIP权益记录已失效或权限不足，请购买后从应用页面重新进入'
   }
 ];
 export default appErrList.reduce((acc, cur, index) => {

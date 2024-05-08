@@ -32,12 +32,14 @@ const OutLink = ({
   shareId,
   chatId,
   showHistory,
-  authToken
+  authToken,
+  hint
 }: {
   shareId: string;
   chatId: string;
   showHistory: '0' | '1';
   authToken?: string;
+  hint: string;
 }) => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -154,15 +156,17 @@ const OutLink = ({
   );
 
   const loadChatInfo = useCallback(
-    async (shareId: string, chatId: string) => {
+    async (shareId: string, chatId: string, hint: string) => {
       if (!shareId) return null;
 
       try {
         const res = await getInitOutLinkChatInfo({
           chatId,
           shareId,
-          outLinkUid
+          outLinkUid,
+          hint
         });
+
         const history = res.history.map((item) => ({
           ...item,
           status: ChatStatusEnum.finish
@@ -193,7 +197,8 @@ const OutLink = ({
         console.log(e);
         toast({
           status: 'error',
-          title: getErrText(e, t('core.shareChat.Init Error'))
+          title: getErrText(e, t('core.shareChat.Init Error')),
+          duration: 4000
         });
 
         if (e.code === 502002) {
@@ -217,13 +222,13 @@ const OutLink = ({
     [outLinkUid, router, setChatData, t, toast]
   );
 
-  const { isFetching } = useQuery(['init', shareId, chatId], () => {
+  const { isFetching } = useQuery(['init', shareId, chatId, hint], () => {
     if (forbidRefresh.current) {
       forbidRefresh.current = false;
       return null;
     }
-
-    return loadChatInfo(shareId, chatId);
+    console.log('hint: ', hint);
+    return loadChatInfo(shareId, chatId, hint);
   });
 
   // load histories
@@ -403,6 +408,7 @@ export async function getServerSideProps(context: any) {
   const chatId = context?.query?.chatId || '';
   const showHistory = context?.query?.showHistory || '1';
   const authToken = context?.query?.authToken || '';
+  const hint = context?.query?.hint || '';
 
   return {
     props: {
@@ -410,6 +416,7 @@ export async function getServerSideProps(context: any) {
       chatId,
       showHistory,
       authToken,
+      hint,
       ...(await serviceSideProps(context))
     }
   };
